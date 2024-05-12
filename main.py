@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.under_sampling import RandomUnderSampler
+import warnings
+warnings.filterwarnings('ignore', category=FutureWarning)
+
 
 #### <Bock,R.. (2007). MAGIC Gamma Telescope. UCI Machine Learning Repository. https://doi.org/10.24432/C52C8B.> #####
 
@@ -18,26 +21,59 @@ df.head()
 df["class"]=(df["class"] == "g").astype(int)
 # print(df.head())
 
-##### <<For data analysis we create a historgram/print standard deviation/print data count>> ####
-# for label in cols[:-1]:
-#    plt.figure()
-#    plt.hist(df[df["class"]==1][label], color='blue', label='gamma', alpha=0.7, density=True)
-#    plt.hist(df[df["class"]==0][label], color='red', label='hadron', alpha=0.7, density=True)
-#    plt.title=label
-#    plt.ylabel("Probability")
-#    plt.xlabel(label)
-#    plt.legend()
-#    plt.savefig(f"{label}.png")
-# plt.show()
-# std_devs = df.groupby('class').std()
-# print(std_devs)
-# class_counts = df['class'].value_counts()
-# print(class_counts)
+
 
 
 ##### <<Create Train Valid and test data set>> #####
-train, valid, test = np.split(df.sample(frac=1),[int(0.6*len(df)), int(0.8*len(df))])
-# print("Train set size:", len(train))
-# print("Validation set size:", len(valid))
-# print("Test set size:", len(test))
+train_df, valid_df, test_df = np.split(df.sample(frac=1),[int(0.6*len(df)), int(0.8*len(df))])
+print("Train set size:", len(train_df))
+print("Validation set size:", len(valid_df))
+print("Test set size:", len(test_df))
 
+# # Count the occurrences of each class in the training set
+# class_counts = train_df['class'].value_counts()
+# print("Number of objects with class 1 in the training set:", class_counts[1])
+# print("Number of objects with class 0 in the training set:", class_counts[0])
+
+##### <<Scaling a Dataset/Under/Oversampling>> #####
+def sampling(dataframe, oversample=False, undersample=False):
+   features = dataframe[dataframe.columns[:-1]].values
+   label = dataframe[dataframe.columns[-1]].values
+   
+   scaler = StandardScaler()
+   features = scaler.fit_transform(label)
+
+   if oversample:
+    ros = RandomOverSampler()
+    features, label = ros.fit_resample(features,label)
+
+    if undersample:
+      rus = RandomUnderSampler()
+      features, label = rus.fit_resample(features,label)
+    
+   return features, label
+
+def scale_dataset(dataframe):
+   
+   features = dataframe[dataframe.columns[:-1]].values
+   label = dataframe[dataframe.columns[-1]].values
+   
+   scaler = StandardScaler()
+   features = scaler.fit_transform(features)
+   data = np.hstack((features, np.reshape(label, (-1,1))))
+   
+   return data
+  
+
+features_train_oversample, label_train_oversample = sampling(train_df, oversample=True, undersample=False)
+features_train_undersample, label_train_undersample = sampling(train_df, oversample=False, undersample=True)
+features_valid, label_valid = sampling(valid_df, oversample=False, undersample=False)
+features_test, label_test = sampling(test_df, oversample=False, undersample=False)
+
+train = scale_dataset(train_df)
+valid = scale_dataset(valid_df)
+test = scale_dataset(test_df)
+
+
+print("This is the label_train oversample:", len(label_train_oversample))
+print("This is the label_train UnderSample:", len(label_train_undersample))
