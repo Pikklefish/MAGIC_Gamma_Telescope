@@ -26,9 +26,9 @@ df["class"]=(df["class"] == "g").astype(int)
 
 ##### <<Create Train Valid and test data set>> #####
 train_df, valid_df, test_df = np.split(df.sample(frac=1),[int(0.6*len(df)), int(0.8*len(df))])
-print("Train set size:", len(train_df))
-print("Validation set size:", len(valid_df))
-print("Test set size:", len(test_df))
+# print("Train set size:", len(train_df))
+# print("Validation set size:", len(valid_df))
+# print("Test set size:", len(test_df))
 
 # # Count the occurrences of each class in the training set
 # class_counts = train_df['class'].value_counts()
@@ -41,15 +41,16 @@ def sampling(dataframe, oversample=False, undersample=False):
    label = dataframe[dataframe.columns[-1]].values
    
    scaler = StandardScaler()
-   features = scaler.fit_transform(label)
+   features = scaler.fit_transform(features)
+   
+   if undersample:
+    rus = RandomUnderSampler()
+    features, label = rus.fit_resample(features,label)
 
    if oversample:
     ros = RandomOverSampler()
     features, label = ros.fit_resample(features,label)
 
-    if undersample:
-      rus = RandomUnderSampler()
-      features, label = rus.fit_resample(features,label)
     
    return features, label
 
@@ -75,5 +76,18 @@ valid = scale_dataset(valid_df)
 test = scale_dataset(test_df)
 
 
-print("This is the label_train oversample:", len(label_train_oversample))
-print("This is the label_train UnderSample:", len(label_train_undersample))
+# print("This is the label_train oversample:", len(label_train_oversample))
+# print("This is the label_train UnderSample:", len(label_train_undersample))
+
+
+# print("1 in labe_oversample: ", sum(label_train_oversample == 1))
+# print("0 in labe_oversample: ", sum(label_train_oversample == 0))
+
+
+# print("1 in label_undersample: ", sum(label_train_undersample == 1))
+# print("0 in label_undersample: ", sum(label_train_undersample == 0))
+
+
+##### <<KNN Model>> #####
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import classification_report
