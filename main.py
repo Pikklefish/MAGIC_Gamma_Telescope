@@ -31,14 +31,7 @@ df["class"]=(df["class"] == "g").astype(int)
 
 ##### <<Create Train Valid and test data set>> #####
 train_df, valid_df, test_df = np.split(df.sample(frac=1, random_state=42),[int(0.6*len(df)), int(0.8*len(df))])
-# print("Train set size:", len(train_df))
-# print("Validation set size:", len(valid_df))
-# print("Test set size:", len(test_df))
 
-# # Count the occurrences of each class in the training set
-# class_counts = train_df['class'].value_counts()
-# print("Number of objects with class 1 in the training set:", class_counts[1])
-# print("Number of objects with class 0 in the training set:", class_counts[0])
 
 ##### <<Scaling a Dataset/Under/Oversampling>> #####
 selected_features = ["fAsym", "fLength", "fM3Long", "fAlpha"]
@@ -51,11 +44,11 @@ def sampling(dataframe, features, oversample=False, undersample=False):
    features_data = scaler.fit_transform(features_data)
    
    if undersample:
-    rus = RandomUnderSampler()
+    rus = RandomUnderSampler(random_state = 42)
     features_data, label = rus.fit_resample(features_data,label)
 
    if oversample:
-    ros = RandomOverSampler()
+    ros = RandomOverSampler(random_state = 42)
     features_data, label = ros.fit_resample(features_data,label)
 
     
@@ -81,19 +74,6 @@ features_test, label_test = sampling(test_df, selected_features,oversample=False
 train = scale_dataset(train_df,selected_features)
 valid = scale_dataset(valid_df,selected_features)
 test = scale_dataset(test_df,selected_features)
-
-# print(features_train_oversample)
-# print("This is the label_train oversample:", len(label_train_oversample))
-# print("This is the label_train UnderSample:", len(label_train_undersample))
-
-
-# print("1 in labe_oversample: ", sum(label_train_oversample == 1))
-# print("0 in labe_oversample: ", sum(label_train_oversample == 0))
-
-
-# print("1 in label_undersample: ", sum(label_train_undersample == 1))
-# print("0 in label_undersample: ", sum(label_train_undersample == 0))
-
 
 ##### <<KNN Model>> #####
 for k in range (1,11):
