@@ -4,6 +4,12 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.under_sampling import RandomUnderSampler
+
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import classification_report
+
+
+
 import warnings
 warnings.filterwarnings('ignore', category=FutureWarning)
 
@@ -36,46 +42,48 @@ train_df, valid_df, test_df = np.split(df.sample(frac=1),[int(0.6*len(df)), int(
 # print("Number of objects with class 0 in the training set:", class_counts[0])
 
 ##### <<Scaling a Dataset/Under/Oversampling>> #####
-def sampling(dataframe, oversample=False, undersample=False):
-   features = dataframe[dataframe.columns[:-1]].values
-   label = dataframe[dataframe.columns[-1]].values
+selected_features = ["fAsym", "fLength", "fM3Long", "fAlpha"]
+
+def sampling(dataframe, features, oversample=False, undersample=False):
+   features_data = dataframe[features].values
+   label = dataframe["class"].values
    
    scaler = StandardScaler()
-   features = scaler.fit_transform(features)
+   features_data = scaler.fit_transform(features_data)
    
    if undersample:
     rus = RandomUnderSampler()
-    features, label = rus.fit_resample(features,label)
+    features_data, label = rus.fit_resample(features_data,label)
 
    if oversample:
     ros = RandomOverSampler()
-    features, label = ros.fit_resample(features,label)
+    features_data, label = ros.fit_resample(features_data,label)
 
     
-   return features, label
+   return features_data, label
 
-def scale_dataset(dataframe):
+def scale_dataset(dataframe, features):
    
-   features = dataframe[dataframe.columns[:-1]].values
-   label = dataframe[dataframe.columns[-1]].values
+   features_data = dataframe[features].values
+   label = dataframe["class"].values
    
    scaler = StandardScaler()
-   features = scaler.fit_transform(features)
-   data = np.hstack((features, np.reshape(label, (-1,1))))
+   features_data = scaler.fit_transform(features_data)
+   data = np.hstack((features_data, np.reshape(label, (-1,1))))
    
    return data
   
 
-features_train_oversample, label_train_oversample = sampling(train_df, oversample=True, undersample=False)
-features_train_undersample, label_train_undersample = sampling(train_df, oversample=False, undersample=True)
-features_valid, label_valid = sampling(valid_df, oversample=False, undersample=False)
-features_test, label_test = sampling(test_df, oversample=False, undersample=False)
+features_train_oversample, label_train_oversample = sampling(train_df, selected_features,oversample=True, undersample=False)
+features_train_undersample, label_train_undersample = sampling(train_df, selected_features,oversample=False, undersample=True)
+features_valid, label_valid = sampling(valid_df, selected_features, oversample=False, undersample=False)
+features_test, label_test = sampling(test_df, selected_features,oversample=False, undersample=False)
 
-train = scale_dataset(train_df)
-valid = scale_dataset(valid_df)
-test = scale_dataset(test_df)
+train = scale_dataset(train_df,selected_features)
+valid = scale_dataset(valid_df,selected_features)
+test = scale_dataset(test_df,selected_features)
 
-
+# print(features_train_oversample)
 # print("This is the label_train oversample:", len(label_train_oversample))
 # print("This is the label_train UnderSample:", len(label_train_undersample))
 
@@ -89,5 +97,20 @@ test = scale_dataset(test_df)
 
 
 ##### <<KNN Model>> #####
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import classification_report
+for k in range (1,11):
+    knn_model = KNeighborsClassifier(n_neighbors=k)
+
+    #####Oversampled
+    knn_model.fit(features_train_oversample, label_train_oversample)
+
+    label_pred_oversample_valid = knn_model.predict(features_valid)
+    print(f"Classification Report for Oversample k={k}:\n")
+    print(classification_report(label_valid,label_pred_oversample_valid))
+
+    #####Undersampled
+    knn_model.fit(features_train_undersample, label_train_undersample)
+
+    label_pred_undersample_valid = knn_model.predict(features_valid)
+    print(f"Classification Report for Undersample k={k}:\n")
+    print(classification_report(label_valid,label_pred_undersample_valid))
+
