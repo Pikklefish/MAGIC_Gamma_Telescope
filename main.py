@@ -9,7 +9,6 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report
 
 
-
 import warnings
 warnings.filterwarnings('ignore', category=FutureWarning)
 
@@ -31,7 +30,7 @@ df["class"]=(df["class"] == "g").astype(int)
 
 
 ##### <<Create Train Valid and test data set>> #####
-train_df, valid_df, test_df = np.split(df.sample(frac=1),[int(0.6*len(df)), int(0.8*len(df))])
+train_df, valid_df, test_df = np.split(df.sample(frac=1, random_state=42),[int(0.6*len(df)), int(0.8*len(df))])
 # print("Train set size:", len(train_df))
 # print("Validation set size:", len(valid_df))
 # print("Test set size:", len(test_df))
