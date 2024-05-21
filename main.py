@@ -6,6 +6,8 @@ from imblearn.over_sampling import RandomOverSampler
 from imblearn.under_sampling import RandomUnderSampler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report
+
+import hashlib
 import warnings
 warnings.filterwarnings('ignore', category=FutureWarning)
 
@@ -28,14 +30,7 @@ df["class"]=(df["class"] == "g").astype(int)
 
 ##### <<Create Train Valid and test data set>> #####
 train_df, valid_df, test_df = np.split(df.sample(frac=1, random_state=42),[int(0.6*len(df)), int(0.8*len(df))])
-# print("Train set size:", len(train_df))
-# print("Validation set size:", len(valid_df))
-# print("Test set size:", len(test_df))
 
-# # Count the occurrences of each class in the training set
-# class_counts = train_df['class'].value_counts()
-# print("Number of objects with class 1 in the training set:", class_counts[1])
-# print("Number of objects with class 0 in the training set:", class_counts[0])
 
 ##### <<Scaling a Dataset/Under/Oversampling>> #####
 def sampling(dataframe, oversample=False, undersample=False):
@@ -46,11 +41,11 @@ def sampling(dataframe, oversample=False, undersample=False):
    features = scaler.fit_transform(features)
    
    if undersample:
-    rus = RandomUnderSampler()
+    rus = RandomUnderSampler(random_state=42)
     features, label = rus.fit_resample(features,label)
 
    if oversample:
-    ros = RandomOverSampler()
+    ros = RandomOverSampler(random_state=42)
     features, label = ros.fit_resample(features,label)
 
     
