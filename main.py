@@ -8,6 +8,7 @@ from imblearn.under_sampling import RandomUnderSampler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report
 
+from sklearn.naive_bayes import GaussianNB
 
 import warnings
 warnings.filterwarnings('ignore', category=FutureWarning)
@@ -96,5 +97,18 @@ test = scale_dataset(test_df,selected_features)
 
 
 ##### <<Naive Bayes Model>> #####
+nb_model = GaussianNB()
 
+#####Oversampled
+nb_model_ov = nb_model.fit(features_train_oversample,label_train_oversample)
+ov_pred = nb_model_ov.predict(features_valid)
+
+print("Oversampled data")
+print(classification_report(label_valid, ov_pred))
+#####Undersampled
+nb_model_un = nb_model.fit(features_train_undersample,label_train_undersample)
+un_pred = nb_model_un.predict(features_valid)
+
+print("Undersampled data")
+print(classification_report(label_valid, un_pred))
 #this is the feature selected branch branch
