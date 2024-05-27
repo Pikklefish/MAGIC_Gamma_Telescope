@@ -4,8 +4,11 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import StandardScaler
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.under_sampling import RandomUnderSampler
+
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report
+
+from sklearn.naive_bayes import GaussianNB
 
 import hashlib
 import warnings
@@ -73,16 +76,6 @@ valid = scale_dataset(valid_df)
 test = scale_dataset(test_df)
 
 
-# print("This is the label_train oversample:", len(label_train_oversample))
-# print("This is the label_train UnderSample:", len(label_train_undersample))
-
-
-# print("1 in labe_oversample: ", sum(label_train_oversample == 1))
-# print("0 in labe_oversample: ", sum(label_train_oversample == 0))
-
-
-# print("1 in label_undersample: ", sum(label_train_undersample == 1))
-# print("0 in label_undersample: ", sum(label_train_undersample == 0))
 
 ###### <<KNN Model>> #####
 # for k in range (1,11):
@@ -104,4 +97,18 @@ test = scale_dataset(test_df)
 
 
 ##### <<Naive Bayes Model>> #####
+nb_model = GaussianNB()
+
+#####Oversampled
+nb_model_ov = nb_model.fit(features_train_oversample,label_train_oversample)
+ov_pred = nb_model_ov.predict(features_valid)
+
+print("Oversampled data")
+print(classification_report(label_valid, ov_pred))
+#####Undersampled
+nb_model_un = nb_model.fit(features_train_undersample,label_train_undersample)
+un_pred = nb_model_un.predict(features_valid)
+
+print("Undersampled data")
+print(classification_report(label_valid, un_pred))
 #this is the not feature selected branch
