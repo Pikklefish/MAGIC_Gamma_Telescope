@@ -10,6 +10,8 @@ from sklearn.metrics import classification_report
 
 from sklearn.naive_bayes import GaussianNB
 
+from sklearn.linear_model import LogisticRegression
+
 import hashlib
 import warnings
 warnings.filterwarnings('ignore', category=FutureWarning)
@@ -77,38 +79,21 @@ test = scale_dataset(test_df)
 
 
 
-###### <<KNN Model>> #####
-# for k in range (1,11):
-#     knn_model = KNeighborsClassifier(n_neighbors=k)
-
-#     #####Oversampled
-#     knn_model.fit(features_train_oversample, label_train_oversample)
-
-#     label_pred_oversample_valid = knn_model.predict(features_valid)
-#     print(f"Classification Report for Oversample k={k}:\n")
-#     print(classification_report(label_valid,label_pred_oversample_valid))
-
-#     #####Undersampled
-#     knn_model.fit(features_train_undersample, label_train_undersample)
-
-#     label_pred_undersample_valid = knn_model.predict(features_valid)
-#     print(f"Classification Report for Undersample k={k}:\n")
-#     print(classification_report(label_valid,label_pred_undersample_valid))
-
-
-##### <<Naive Bayes Model>> #####
-nb_model = GaussianNB()
+##### <<Logisitc Regression Model>> #####
+lg_model = LogisticRegression()
 
 #####Oversampled
-nb_model_ov = nb_model.fit(features_train_oversample,label_train_oversample)
-ov_pred = nb_model_ov.predict(features_valid)
+lg_model_ov = lg_model.fit(features_train_oversample,label_train_oversample)
+ov_pred = lg_model_ov.predict(features_valid)
 
 print("Oversampled data")
 print(classification_report(label_valid, ov_pred))
+
 #####Undersampled
-nb_model_un = nb_model.fit(features_train_undersample,label_train_undersample)
-un_pred = nb_model_un.predict(features_valid)
+lg_model_un = lg_model.fit(features_train_undersample,label_train_undersample)
+un_pred = lg_model_un.predict(features_valid)
 
 print("Undersampled data")
 print(classification_report(label_valid, un_pred))
+
 #this is the not feature selected branch
