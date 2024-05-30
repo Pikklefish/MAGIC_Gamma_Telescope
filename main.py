@@ -80,21 +80,23 @@ test = scale_dataset(test_df)
 
 
 ###### <<SVM Model>> #####
+def evaluate_svm(kernel_type):
+    svm_model = SVC(kernel=kernel_type)
+    
+    # Oversample
+    svm_model.fit(features_train_oversample, label_train_oversample)
+    label_pred_oversample = svm_model.predict(features_valid)
+    print(f"Oversample - Kernel: {kernel_type}")
+    print(classification_report(label_valid, label_pred_oversample))
+    
+    # Undersample
+    svm_model.fit(features_train_undersample, label_train_undersample)
+    label_pred_undersample = svm_model.predict(features_valid)
+    print(f"Undersample - Kernel: {kernel_type}")
+    print(classification_report(label_valid, label_pred_undersample))
 
-svm_model = SVC()
-
-######Oversample
-svm_model = svm_model.fit(features_train_oversample, label_train_oversample)
-
-label_pred  = svm_model.predict(features_valid)
-print("oversample")
-print(classification_report(label_valid, label_pred))
-
-
-######Undersample
-svm_model = svm_model.fit(features_train_undersample, label_train_undersample)
-
-label_pred  = svm_model.predict(features_valid)
-print("undersample")
-print(classification_report(label_valid, label_pred))
+# Evaluate SVM with different kernels
+kernels = ['linear', 'poly', 'rbf', 'sigmoid']
+for kernel in kernels:
+    evaluate_svm(kernel)
 #this is the not feature selected branch
