@@ -84,16 +84,16 @@ lg_model = LogisticRegression()
 
 #####Oversampled
 lg_model_ov = lg_model.fit(features_train_oversample,label_train_oversample)
-ov_pred = lg_model_ov.predict(features_valid)
+ov_pred = lg_model_ov.predict(features_test)
 
 print("Oversampled data")
-print(classification_report(label_valid, ov_pred))
+print(classification_report(label_test, ov_pred))
 
 #####Undersampled
 lg_model_un = lg_model.fit(features_train_undersample,label_train_undersample)
-un_pred = lg_model_un.predict(features_valid)
+un_pred = lg_model_un.predict(features_test)
 
 print("Undersampled data")
-print(classification_report(label_valid, un_pred))
+print(classification_report(label_test, un_pred))
 
 #this is the not feature selected branch
