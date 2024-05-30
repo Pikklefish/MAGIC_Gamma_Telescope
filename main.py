@@ -81,4 +81,20 @@ test = scale_dataset(test_df)
 
 ###### <<SVM Model>> #####
 
+svm_model = SVC()
+
+######Oversample
+svm_model = svm_model.fit(features_train_oversample, label_train_oversample)
+
+label_pred  = svm_model.predict(features_valid)
+print("oversample")
+print(classification_report(label_valid, label_pred))
+
+
+######Undersample
+svm_model = svm_model.fit(features_train_undersample, label_train_undersample)
+
+label_pred  = svm_model.predict(features_valid)
+print("undersample")
+print(classification_report(label_valid, label_pred))
 #this is the not feature selected branch
