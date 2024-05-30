@@ -77,3 +77,24 @@ features_test, label_test = sampling(test_df, selected_features,oversample=False
 train = scale_dataset(train_df,selected_features)
 valid = scale_dataset(valid_df,selected_features)
 test = scale_dataset(test_df,selected_features)
+
+
+##### <<KNN Model>> #####
+
+for k in range (1,11):
+    knn_model = KNeighborsClassifier(n_neighbors=k)
+
+    #####Oversampled
+    knn_model.fit(features_train_oversample, label_train_oversample)
+
+    label_pred_oversample_valid = knn_model.predict(features_valid)
+    print(f"Classification Report for Oversample k={k}:\n")
+    print(classification_report(label_valid,label_pred_oversample_valid))
+
+    #####Undersampled
+    knn_model.fit(features_train_undersample, label_train_undersample)
+
+    label_pred_undersample_valid = knn_model.predict(features_valid)
+    print(f"Classification Report for Undersample k={k}:\n")
+    print(classification_report(label_valid,label_pred_undersample_valid))
+
