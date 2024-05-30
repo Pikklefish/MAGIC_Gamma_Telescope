@@ -80,7 +80,7 @@ test = scale_dataset(test_df,selected_features)
 
 
 ##### <<Logisitc Regression Model>> #####
-lg_model = LogisticRegression(peanlty=['L1'])
+lg_model = LogisticRegression()
 
 #####Oversampled
 lg_model_ov = lg_model.fit(features_train_oversample,label_train_oversample)
