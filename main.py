@@ -77,3 +77,22 @@ features_test, label_test = sampling(test_df, selected_features,oversample=False
 train = scale_dataset(train_df,selected_features)
 valid = scale_dataset(valid_df,selected_features)
 test = scale_dataset(test_df,selected_features)
+
+
+##### <<Logisitc Regression Model>> #####
+lg_model = LogisticRegression(peanlty=['L1'])
+
+#####Oversampled
+lg_model_ov = lg_model.fit(features_train_oversample,label_train_oversample)
+ov_pred = lg_model_ov.predict(features_valid)
+
+print("Oversampled data")
+print(classification_report(label_valid, ov_pred))
+
+#####Undersampled
+lg_model_un = lg_model.fit(features_train_undersample,label_train_undersample)
+un_pred = lg_model_un.predict(features_valid)
+
+print("Undersampled data")
+print(classification_report(label_valid, un_pred))
+#this is the feature selected branch branch
