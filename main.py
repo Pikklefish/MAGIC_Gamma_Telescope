@@ -12,6 +12,8 @@ from sklearn.naive_bayes import GaussianNB
 
 from sklearn.linear_model import LogisticRegression
 
+from sklearn.svm import SVC
+
 import warnings
 warnings.filterwarnings('ignore', category=FutureWarning)
 
@@ -77,3 +79,22 @@ features_test, label_test = sampling(test_df, selected_features,oversample=False
 train = scale_dataset(train_df,selected_features)
 valid = scale_dataset(valid_df,selected_features)
 test = scale_dataset(test_df,selected_features)
+
+##### <<Support Vector Machine>> #####
+
+svm_model = SVC()
+
+######Oversample
+svm_model = svm_model.fit(features_train_oversample, label_train_oversample)
+
+label_pred  = svm_model.predict(features_valid)
+print("oversample")
+print(classification_report(label_valid, label_pred))
+
+
+######Undersample
+svm_model = svm_model.fit(features_train_undersample, label_train_undersample)
+
+label_pred  = svm_model.predict(features_valid)
+print("undersample")
+print(classification_report(label_valid, label_pred))
